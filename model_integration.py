@@ -135,11 +135,8 @@ def make_fig(mean_prices, address):
 
     return fig
 
-@st.cache
-def load_model():
-    return HospitalPricingClassifier()
 
-model = load_model()
+model = HospitalPricingClassifier()
 
 #Streamlit
 with st.form(key = 'form_one'):
