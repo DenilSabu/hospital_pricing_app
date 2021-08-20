@@ -23,10 +23,10 @@ token = \
 
 # Model
 
-@st.cache
+
 class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
 
-    
+    @st.cache
     def __init__(
         self,
         HospitalLocPath='hospital_model3',
