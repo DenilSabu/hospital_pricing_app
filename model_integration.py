@@ -23,9 +23,10 @@ token = \
 
 # Model
 
+@st.cache
 class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
 
-    @st.cache
+    
     def __init__(
         self,
         HospitalLocPath='hospital_model3',
@@ -37,7 +38,11 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         df = pd.read_parquet(PricesPath)
         df.set_index('npi_number', inplace=True)
         self.prices = df
+        self.num = 1
 
+    def get_num(self):
+        return self.num
+    
     def _get_distance(
         self,
         p_lat,
@@ -144,7 +149,7 @@ def make_fig(mean_prices, address):
 
 
 model = HospitalPricingClassifier()
-
+st.write(model.get_num())
 # Streamlit
 
 with st.form(key='form_one'):
