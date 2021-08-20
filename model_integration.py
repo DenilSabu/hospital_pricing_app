@@ -44,7 +44,8 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         return self
 
     def description(self):
-        return self.prices['short_description'].unique().tolist()
+        new_df = self.prices
+        return new_df['short_description'].unique().tolist()
     
     def convert_loc(self, address):
         error_catcher = geocoder.osm (address)
