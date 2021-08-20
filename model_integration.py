@@ -143,7 +143,7 @@ with st.form(key = 'form_one'):
     st.write("Used AWS")
     st.title('Hospital Pricing Model')
     address = st.text_input('Enter location')
-    procedure = st.selectbox('Choose procedure', model().description())
+    procedure = st.selectbox('Choose procedure', model.description())
     value =  st.slider('Radius search for hospitals in miles', min_value = 0, max_value = 500)
     submit = st.form_submit_button('Find')
 
