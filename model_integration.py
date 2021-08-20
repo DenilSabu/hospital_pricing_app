@@ -166,7 +166,7 @@ if submit:
     #st.dataframe(pd.DataFrame(model.predict(filtered)))
     st.header('Mapped Data')
     #st.plotly_chart(make_fig(model.get_mean_prices(filtered), address),
-                    use_container_width=True)
+    #                use_container_width=True)
     #st.dataframe(pd.DataFrame(model.get_mean_prices(filtered).drop(columns=['npi_number'
                  , 'Lat', 'Lng'])))
 
