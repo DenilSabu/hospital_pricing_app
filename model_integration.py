@@ -149,11 +149,9 @@ def make_fig(mean_prices, address):
 
 
 model = HospitalPricingClassifier()
-st.write(model.get_num())
 # Streamlit
 
 with st.form(key='form_one'):
-    st.write('Used AWS')
     st.title('Hospital Pricing Model')
     address = st.text_input('Enter location')
     procedure = st.selectbox('Choose procedure', model.description())
