@@ -168,6 +168,6 @@ if submit:
     #st.plotly_chart(make_fig(model.get_mean_prices(filtered), address),
     #                use_container_width=True)
     #st.dataframe(pd.DataFrame(model.get_mean_prices(filtered).drop(columns=['npi_number'
-                 , 'Lat', 'Lng'])))
+    #             , 'Lat', 'Lng'])))
 
 st.header('Data Visualization')
