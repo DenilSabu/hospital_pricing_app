@@ -27,7 +27,9 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
             
         
         self.hospital_loc = pd.read_parquet(HospitalLocPath)
-        self.prices = pd.read_parquet(PricesPath)    
+        df = pd.read_parquet(PricesPath)
+        df.set_index('npi_number', inplace = True)
+        self.prices = df
 
     def _get_distance(self,p_lat, p_lng, threshold=100):
 
@@ -82,7 +84,7 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
 #Mapping
 def make_fig(mean_prices, address):
     fig = go.Figure()
-    lat, lng = model.convert_loc(address)
+    lat, lng = model().convert_loc(address)
     fig.add_trace(go.Scattermapbox(
             lat = mean_prices['Lat'],
             lon = mean_prices['Lng'],
@@ -133,13 +135,18 @@ def make_fig(mean_prices, address):
 
     return fig
 
+@st.cache
+def load_model():
+    return HospitalPricingClassifier()
+
+model = load_model()
 
 #Streamlit
 with st.form(key = 'form_one'):
     st.write("Used AWS")
     st.title('Hospital Pricing Model')
     address = st.text_input('Enter location')
-    procedure = st.selectbox('Choose procedure', model.description())
+    procedure = st.selectbox('Choose procedure', model().description())
     value =  st.slider('Radius search for hospitals in miles', min_value = 0, max_value = 500)
     submit = st.form_submit_button('Find')
 
