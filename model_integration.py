@@ -157,6 +157,7 @@ with st.form(key='form_one'):
 if submit:
     model.threshold = value
     filtered = pd.DataFrame(model.get_filtered((str(address), str(procedure))))
+    st.header('Procedure Pricing')
     st.dataframe(pd.DataFrame(model.predict(filtered)))
     st.header('Mapped Data')
     st.plotly_chart(make_fig(model.get_mean_prices(filtered), address),
