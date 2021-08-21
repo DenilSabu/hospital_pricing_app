@@ -12,11 +12,9 @@ from sklearn.base import BaseEstimator, ClassifierMixin
 from geopy.distance import geodesic
 import plotly.graph_objects as go
 import sys
-from pathlib import Path
 import pyarrow
 
 # sys.tracebacklimit = 0
-
 token = \
     'pk.eyJ1IjoiZGVuaWxzIiwiYSI6ImNrcm13aGZ6aTd6Mm0ydW1uNm4yZnhkOWoifQ.rDR3etgUeyNpJELeH-Qwtw'
 
@@ -81,7 +79,7 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
 
     def predict(self, filtered):
         prediction = {'min price': filtered['price'].min(),
-                      'mean price': filtered['price'].mean().round(-1),
+                      'mean price': filtered['price'].mean(),
                       'max price': filtered['price'].max()}
         return pd.DataFrame(prediction, index=[0])
 
@@ -102,13 +100,15 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         return mean_prices
 
 
+#Initialize model
 
+model = HospitalPricingClassifier()
 
 # Mapping
 
 def make_fig(mean_prices, address):
     fig = go.Figure()
-    (lat, lng) = model().convert_loc(address)
+    (lat, lng) = model.convert_loc(address)
     fig.add_trace(go.Scattermapbox(
         lat=mean_prices['Lat'],
         lon=mean_prices['Lng'],
@@ -144,7 +144,6 @@ def make_fig(mean_prices, address):
     return fig
 
 
-model = HospitalPricingClassifier()
 # Streamlit
 
 with st.form(key='form_one'):
