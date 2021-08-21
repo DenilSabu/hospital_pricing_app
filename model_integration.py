@@ -20,6 +20,12 @@ token = st.secrets['map_token']
 
 # Model
 
+@st.cache
+def load_files():
+    return (pd.read_parquet(HospitalLocPath),
+            pd.read_parquet(PricesPath).set_index('npi_number',
+            inplace=True))
+
 class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
 
     def __init__(
@@ -28,12 +34,8 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         PricesPath='prices_pruned',
         threshold=50,
         ):
-
-        self.hospital_loc = pd.read_parquet(HospitalLocPath)
-        df = pd.read_parquet(PricesPath)
-        df.set_index('npi_number', inplace=True)
-        self.prices = df
-
+        self.hospital_loc, self.prices = load_files()
+                
     def _get_distance(
         self,
         p_lat,
@@ -144,7 +146,7 @@ def make_fig(mean_prices, address):
 
 
 # Streamlit
-
+@st.cache
 with st.form(key='form_one'):
     st.title('Hospital Pricing Model')
     address = st.text_input('Enter location')
