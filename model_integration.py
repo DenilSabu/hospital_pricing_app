@@ -14,9 +14,8 @@ import plotly.graph_objects as go
 import sys
 import pyarrow
 
-# sys.tracebacklimit = 0
-token = \
-    'pk.eyJ1IjoiZGVuaWxzIiwiYSI6ImNrcm13aGZ6aTd6Mm0ydW1uNm4yZnhkOWoifQ.rDR3etgUeyNpJELeH-Qwtw'
+sys.tracebacklimit = 0
+token = st.secrets['map_token']
 
 
 # Model
