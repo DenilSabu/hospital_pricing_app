@@ -42,12 +42,13 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         p_lng,
         threshold=50,
         ):
-
-        self.hospital_loc['distance'] = \
+        
+        df = pd.DataFrame()    
+        df['distance'] = \
             self.hospital_loc.apply(lambda x: geodesic((p_lat, p_lng),
                                     (x['Lat'], x['Lng'])).miles, axis=1)
 
-        return self.hospital_loc.loc[self.hospital_loc.distance
+        return self.hospital_loc.loc[df.distance
                 <= threshold, ['npi_number']]
 
     def fit(self):
@@ -95,7 +96,6 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
             'Lng',
             'name',
             'url',
-            'distance',
             ], as_index=False)['price'].mean()
         mean_prices.sort_values(by=['price'])
         return mean_prices
