@@ -1,5 +1,4 @@
 # Imports
-
 from os import system
 from pandas.core.algorithms import mode
 from pandas.core.frame import DataFrame
@@ -22,7 +21,8 @@ token = st.secrets['map_token']
 
 @st.cache
 def load_files():
-    return (pd.read_parquet('hospital_model3'))
+    return pd.read_parquet('hospital_model3')
+
 
 @st.cache
 def load_files2():
@@ -33,28 +33,25 @@ def load_files2():
 
 class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
 
-    def __init__(
-        self,
-        threshold=50,
-        ):
+    def __init__(self, threshold=50):
+
         self.hospital_loc = load_files2()
         self.prices = load_files2()
-    
-                
+
     def _get_distance(
         self,
         p_lat,
         p_lng,
         threshold=50,
         ):
-        
-        df = pd.DataFrame()    
-        df['distance'] = \
-            self.hospital_loc.apply(lambda x: geodesic((p_lat, p_lng),
-                                    (x['Lat'], x['Lng'])).miles, axis=1)
 
-        return self.hospital_loc.loc[df.distance
-                <= threshold, ['npi_number']]
+        df = pd.DataFrame()
+        df['distance'] = self.hospital_loc.apply(lambda x: \
+                geodesic((p_lat, p_lng), (x['Lat'], x['Lng'])).miles,
+                axis=1)
+
+        return self.hospital_loc.loc[df.distance <= threshold,
+                ['npi_number']]
 
     def fit(self):
         return self
@@ -95,20 +92,16 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
                 ].isin(filtered['npi_number'].tolist())]
         mean_prices = pd.merge(prices, filtered[['npi_number', 'price'
                                ]], on='npi_number')
-        mean_prices = mean_prices.groupby(by=[
-            'npi_number',
-            'Lat',
-            'Lng',
-            'name',
-            'url',
-            ], as_index=False)['price'].mean()
+        mean_prices = mean_prices.groupby(by=['npi_number', 'Lat', 'Lng'
+                , 'name', 'url'], as_index=False)['price'].mean()
         mean_prices.sort_values(by=['price'])
         return mean_prices
 
 
-#Initialize model
+# Initialize model
 
 model = HospitalPricingClassifier()
+
 
 # Mapping
 
@@ -170,7 +163,7 @@ if submit:
     st.plotly_chart(make_fig(model.get_mean_prices(filtered), address),
                     use_container_width=True)
     mean_prices = pd.DataFrame(model.get_mean_prices(filtered))
-    st.dataframe(pd.DataFrame(mean_prices.drop(columns=['npi_number'
-                 , 'Lat', 'Lng'])))
+    st.dataframe(pd.DataFrame(mean_prices.drop(columns=['npi_number',
+                 'Lat', 'Lng'])))
 
 st.header('Data Visualization')
