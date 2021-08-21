@@ -22,8 +22,9 @@ token = st.secrets['map_token']
 
 @st.cache(allow_output_mutation=True)
 def load_files():
-    return (pd.read_parquet('hospital_model3'),
-            pd.read_parquet('prices_pruned'))
+    prices = pd.read_parquet('prices_pruned'))
+    prices.set_index('npi_number', inplace=True)
+    return (pd.read_parquet('hospital_model3'), prices)
 
 
 class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
@@ -33,8 +34,7 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         threshold=50,
         ):
         self.hospital_loc, self.prices = load_files()
-        self.prices.set_index('npi_number',
-            inplace=True)
+    
                 
     def _get_distance(
         self,
@@ -164,7 +164,7 @@ if submit:
     st.header('Mapped Data')
     st.plotly_chart(make_fig(model.get_mean_prices(filtered), address),
                     use_container_width=True)
-    st.dataframe(pd.DataFrame(model.get_mean_prices(filtered).drop(columns=['npi_number'
-                 , 'Lat', 'Lng'])))
+    #st.dataframe(pd.DataFrame(model.get_mean_prices(filtered).drop(columns=['npi_number'
+    #             , 'Lat', 'Lng'])))
 
 st.header('Data Visualization')
