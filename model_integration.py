@@ -22,7 +22,7 @@ token = st.secrets['map_token']
 
 @st.cache(allow_output_mutation=True)
 def load_files():
-    prices = pd.read_parquet('prices_pruned'))
+    prices = pd.read_parquet('prices_pruned')
     prices.set_index('npi_number', inplace=True)
     return (pd.read_parquet('hospital_model3'), prices)
 
