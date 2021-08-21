@@ -145,31 +145,25 @@ def make_fig(mean_prices, address):
 
 
 # Streamlit
-@st.cache
-def load_streamlit():
-    
-    with st.form(key='form_one'):
-        st.title('Hospital Pricing Model')
-        address = st.text_input('Enter location')
-        procedure = st.selectbox('Choose procedure',
-                                 model.description())
-        value = st.slider('Radius search for hospitals in miles',
-                          min_value=0, max_value=50)
-        submit = st.form_submit_button('Find')
 
-    if submit:
-        model.threshold = value
-        filtered = pd.DataFrame(model.get_filtered((str(address),
-                                str(procedure))))
-        st.header('Procedure Pricing')
-        st.dataframe(pd.DataFrame(model.predict(filtered)))
-        st.header('Mapped Data')
-        st.plotly_chart(make_fig(model.get_mean_prices(filtered),
-                        address), use_container_width=True)
-        st.dataframe(pd.DataFrame(model.get_mean_prices(filtered).drop(columns=['npi_number'
-                     , 'Lat', 'Lng'])))
-   
+with st.form(key='form_one'):
+    st.title('Hospital Pricing Model')
+    address = st.text_input('Enter location')
+    procedure = st.selectbox('Choose procedure', model.description())
+    value = st.slider('Radius search for hospitals in miles',
+                      min_value=0, max_value=50)
+    submit = st.form_submit_button('Find')
 
-load_streamlit()
+if submit:
+    model.threshold = value
+    filtered = pd.DataFrame(model.get_filtered((str(address),
+                            str(procedure))))
+    st.header('Procedure Pricing')
+    st.dataframe(pd.DataFrame(model.predict(filtered)))
+    st.header('Mapped Data')
+    st.plotly_chart(make_fig(model.get_mean_prices(filtered), address),
+                    use_container_width=True)
+    st.dataframe(pd.DataFrame(model.get_mean_prices(filtered).drop(columns=['npi_number'
+                 , 'Lat', 'Lng'])))
 
 st.header('Data Visualization')
