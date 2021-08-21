@@ -22,16 +22,15 @@ token = st.secrets['map_token']
 
 @st.cache
 def load_files():
-    return (pd.read_parquet(HospitalLocPath),
-            pd.read_parquet(PricesPath).set_index('npi_number',
+    return (pd.read_parquet('hospital_model3'),
+            pd.read_parquet('prices_pruned').set_index('npi_number',
             inplace=True))
+
 
 class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
 
     def __init__(
         self,
-        HospitalLocPath='hospital_model3',
-        PricesPath='prices_pruned',
         threshold=50,
         ):
         self.hospital_loc, self.prices = load_files()
