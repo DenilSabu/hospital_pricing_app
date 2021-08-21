@@ -161,4 +161,4 @@ if submit:
     st.dataframe(pd.DataFrame(mean_prices.drop(columns=['npi_number',
                  'Lat', 'Lng'])))
 
-st.header('Data Visualization')
+
