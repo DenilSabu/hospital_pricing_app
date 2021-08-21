@@ -23,10 +23,8 @@ token = \
 
 # Model
 
-
 class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
 
-    
     def __init__(
         self,
         HospitalLocPath='hospital_model3',
@@ -39,7 +37,6 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         df.set_index('npi_number', inplace=True)
         self.prices = df
 
-    
     def _get_distance(
         self,
         p_lat,
@@ -83,10 +80,10 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         return filtered
 
     def predict(self, filtered):
-        return filtered.groupby(['code', 'short_description'
-                                ]).agg(mean_price=('price', 'mean'),
-                min_price=('price', 'min'), max_price=('price', 'max'
-                )).round(-1)
+        prediction = {'min price': filtered['price'].min(),
+                      'mean price': filtered['price'].mean().round(-1),
+                      'max price': filtered['price'].max()}
+        return pd.DataFrame(prediction, index=[0])
 
     def get_mean_prices(self, filtered):
         prices = self.hospital_loc.loc[self.hospital_loc['npi_number'
@@ -103,6 +100,8 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
             ], as_index=False)['price'].mean()
         mean_prices.sort_values(by=['price'], inplace=True)
         return mean_prices
+
+
 
 
 # Mapping
@@ -158,13 +157,12 @@ with st.form(key='form_one'):
 
 if submit:
     model.threshold = value
-    filtered = pd.DataFrame(model.get_filtered((str(address),
-                            str(procedure))))
+    filtered = pd.DataFrame(model.get_filtered((str(address), str(procedure))))
     st.dataframe(pd.DataFrame(model.predict(filtered)))
     st.header('Mapped Data')
-    #st.plotly_chart(make_fig(model.get_mean_prices(filtered), address),
-    #                use_container_width=True)
-    #st.dataframe(pd.DataFrame(model.get_mean_prices(filtered).drop(columns=['npi_number'
-    #             , 'Lat', 'Lng'])))
+    st.plotly_chart(make_fig(model.get_mean_prices(filtered), address),
+                    use_container_width=True)
+    st.dataframe(pd.DataFrame(model.get_mean_prices(filtered).drop(columns=['npi_number'
+                 , 'Lat', 'Lng'])))
 
 st.header('Data Visualization')
