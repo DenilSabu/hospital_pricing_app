@@ -13,6 +13,7 @@ from geopy.distance import geodesic
 import plotly.graph_objects as go
 import sys
 import pyarrow
+import copy
 
 sys.tracebacklimit = 0
 token = st.secrets['map_token']
