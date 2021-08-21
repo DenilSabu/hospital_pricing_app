@@ -29,7 +29,7 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         self,
         HospitalLocPath='hospital_model3',
         PricesPath='prices_pruned',
-        threshold=100,
+        threshold=50,
         ):
 
         self.hospital_loc = pd.read_parquet(HospitalLocPath)
@@ -41,7 +41,7 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         self,
         p_lat,
         p_lng,
-        threshold=100,
+        threshold=50,
         ):
 
         self.hospital_loc['distance'] = \
@@ -152,7 +152,7 @@ with st.form(key='form_one'):
     address = st.text_input('Enter location')
     procedure = st.selectbox('Choose procedure', model.description())
     value = st.slider('Radius search for hospitals in miles',
-                      min_value=0, max_value=500)
+                      min_value=0, max_value=50)
     submit = st.form_submit_button('Find')
 
 if submit:
@@ -160,8 +160,8 @@ if submit:
     filtered = pd.DataFrame(model.get_filtered((str(address), str(procedure))))
     st.dataframe(pd.DataFrame(model.predict(filtered)))
     st.header('Mapped Data')
-    st.plotly_chart(make_fig(model.get_mean_prices(filtered), address),
-                    use_container_width=True)
+    #st.plotly_chart(make_fig(model.get_mean_prices(filtered), address),
+                    #use_container_width=True)
     st.dataframe(pd.DataFrame(model.get_mean_prices(filtered).drop(columns=['npi_number'
                  , 'Lat', 'Lng'])))
 
