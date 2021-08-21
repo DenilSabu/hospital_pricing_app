@@ -13,7 +13,6 @@ from geopy.distance import geodesic
 import plotly.graph_objects as go
 import sys
 import pyarrow
-import copy
 
 sys.tracebacklimit = 0
 token = st.secrets['map_token']
@@ -33,7 +32,7 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         self,
         threshold=50,
         ):
-        self.hospital_loc, self.prices = copy.deepcopy(load_files())
+        self.hospital_loc, self.prices = load_files()
         self.prices.set_index('npi_number',
             inplace=True)
                 
@@ -98,7 +97,7 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
             'url',
             'distance',
             ], as_index=False)['price'].mean()
-        mean_prices.sort_values(by=['price'], inplace=True)
+        mean_prices.sort_values(by=['price'])
         return mean_prices
 
 
