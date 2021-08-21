@@ -33,7 +33,7 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         self,
         threshold=50,
         ):
-        self.hospital_loc, self.prices = deepcopy(load_files())
+        self.hospital_loc, self.prices = copy.deepcopy(load_files())
         self.prices.set_index('npi_number',
             inplace=True)
                 
