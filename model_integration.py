@@ -20,7 +20,7 @@ token = st.secrets['map_token']
 
 # Model
 
-@st.cache
+@st.cache(allow_output_mutation=True)
 def load_files():
     return (pd.read_parquet('hospital_model3'),
             pd.read_parquet('prices_pruned'))
