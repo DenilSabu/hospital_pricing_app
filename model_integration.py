@@ -22,9 +22,13 @@ token = st.secrets['map_token']
 
 @st.cache
 def load_files():
+    return (pd.read_parquet('hospital_model3'))
+
+@st.cache
+def load_files2():
     prices = pd.read_parquet('prices_pruned')
     prices.set_index('npi_number', inplace=True)
-    return (pd.read_parquet('hospital_model3'), prices)
+    return prices
 
 
 class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
@@ -33,7 +37,8 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         self,
         threshold=50,
         ):
-        self.hospital_loc, self.prices = load_files()
+        self.hospital_loc = load_files2()
+        self.prices = load_files2()
     
                 
     def _get_distance(
