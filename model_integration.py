@@ -39,21 +39,19 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         p_lng,
         threshold=50,
         ):
-
-        df = pd.DataFrame()
-        df['distance'] = self.hospital_loc.apply(lambda x: \
+        
+        self.hospital_loc['distance'] = self.hospital_loc.apply(lambda x: \
                 geodesic((p_lat, p_lng), (x['Lat'], x['Lng'])).miles,
                 axis=1)
 
-        return self.hospital_loc.loc[df.distance <= threshold,
+        return self.hospital_loc.loc[self.hospital_loc['distance'] <= threshold,
                 ['npi_number']]
 
     def fit(self):
         return self
 
     def description(self):
-        new_df = self.prices
-        return new_df['short_description'].unique().tolist()
+        return self.prices['short_description'].unique().tolist()
 
     def convert_loc(self, address):
         error_catcher = geocoder.osm(address)
@@ -78,7 +76,7 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
 
     def predict(self, filtered):
         prediction = {'min price': filtered['price'].min(),
-                      'mean price': filtered['price'].mean(),
+                      'mean price': filtered['price'].mean().round().astype('int'),
                       'max price': filtered['price'].max()}
         return pd.DataFrame(prediction, index=[0])
 
@@ -88,8 +86,8 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         mean_prices = pd.merge(prices, filtered[['npi_number', 'price'
                                ]], on='npi_number')
         mean_prices = mean_prices.groupby(by=['npi_number', 'Lat', 'Lng'
-                , 'name', 'url'], as_index=False)['price'].mean()
-        mean_prices.sort_values(by=['price'])
+                , 'name', 'url', 'distance'], as_index= False)['price'].mean()
+        mean_prices.sort_values(by=['price'], inplace = True)
         return mean_prices
 
 
@@ -160,5 +158,3 @@ if submit:
     mean_prices = pd.DataFrame(model.get_mean_prices(filtered))
     st.dataframe(pd.DataFrame(mean_prices.drop(columns=['npi_number',
                  'Lat', 'Lng'])))
-
-
