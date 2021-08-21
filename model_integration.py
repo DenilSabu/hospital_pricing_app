@@ -25,6 +25,7 @@ def load_files():
     prices.set_index('npi_number', inplace=True)
     return prices
 
+
 class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
 
     def __init__(self, threshold=50):
@@ -38,13 +39,13 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         p_lng,
         threshold=50,
         ):
+        
+        self.hospital_loc['distance'] = self.hospital_loc.apply(lambda x: \
+                geodesic((p_lat, p_lng), (x['Lat'], x['Lng'])).miles,
+                axis=1)
 
-        self.hospital_loc['distance'] = \
-            self.hospital_loc.apply(lambda x: geodesic((p_lat, p_lng),
-                                    (x['Lat'], x['Lng'])).miles, axis=1)
-
-        return self.hospital_loc.loc[self.hospital_loc['distance']
-                <= threshold, ['npi_number']]
+        return self.hospital_loc.loc[self.hospital_loc['distance'] <= threshold,
+                ['npi_number']]
 
     def fit(self):
         return self
@@ -58,16 +59,12 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
             g = geocoder.mapbox(address, key=token)
             return (g.json['lat'], g.json['lng'])
         else:
-            return 0
+            st.error('Enter valid location!')
+            sys.exit()
 
-    def get_filtered(
-        self,
-        x,
-        y,
-        description,
-        ):
-        patient_lat = x
-        patient_lng = y
+    def get_filtered(self, X):
+        (address, description) = X
+        (patient_lat, patient_lng) = self.convert_loc(address)
         available_hospitals = self._get_distance(patient_lat,
                 patient_lng)
         available_prices = \
@@ -79,8 +76,7 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
 
     def predict(self, filtered):
         prediction = {'min price': filtered['price'].min(),
-                      'mean price': filtered['price'
-                      ].mean().round().astype('int'),
+                      'mean price': filtered['price'].mean().round().astype('int'),
                       'max price': filtered['price'].max()}
         return pd.DataFrame(prediction, index=[0])
 
@@ -89,15 +85,9 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
                 ].isin(filtered['npi_number'].tolist())]
         mean_prices = pd.merge(prices, filtered[['npi_number', 'price'
                                ]], on='npi_number')
-        mean_prices = mean_prices.groupby(by=[
-            'npi_number',
-            'Lat',
-            'Lng',
-            'name',
-            'url',
-            'distance',
-            ], as_index=False)['price'].mean()
-        mean_prices.sort_values(by=['price'], inplace=True)
+        mean_prices = mean_prices.groupby(by=['npi_number', 'Lat', 'Lng'
+                , 'name', 'url', 'distance'], as_index= False)['price'].mean()
+        mean_prices.sort_values(by=['price'], inplace = True)
         return mean_prices
 
 
@@ -158,18 +148,13 @@ with st.form(key='form_one'):
 
 if submit:
     model.threshold = value
-    if model.convert_loc(address) == 0:
-        st.error('Enter a valid location!')
-    else:
-        (x, y) = model.convert_loc(address)
-        filtered = pd.DataFrame(model.get_filtered((str(x), str(y),
-                                str(procedure))))
-        st.header('Procedure Pricing')
-        st.dataframe(pd.DataFrame(model.predict(filtered)))
-        st.header('Mapped Data')
-        st.plotly_chart(make_fig(model.get_mean_prices(filtered),
-                        address), use_container_width=True)
-        mean_prices = pd.DataFrame(model.get_mean_prices(filtered))
-        st.dataframe(pd.DataFrame(mean_prices.drop(columns=['npi_number'
-                     , 'Lat', 'Lng'])))
-
+    filtered = pd.DataFrame(model.get_filtered((str(address),
+                            str(procedure))))
+    st.header('Procedure Pricing')
+    st.dataframe(pd.DataFrame(model.predict(filtered)))
+    st.header('Mapped Data')
+    st.plotly_chart(make_fig(model.get_mean_prices(filtered), address),
+                    use_container_width=True)
+    mean_prices = pd.DataFrame(model.get_mean_prices(filtered))
+    st.dataframe(pd.DataFrame(mean_prices.drop(columns=['npi_number',
+                 'Lat', 'Lng'])))
