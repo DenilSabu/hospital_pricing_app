@@ -166,6 +166,6 @@ if submit:
                     use_container_width=True)
     mean_prices = pd.DataFrame(model.get_mean_prices(filtered))
     st.dataframe(pd.DataFrame(mean_prices.drop(columns=['npi_number'
-                 , 'Lat', 'Lng']))
+                 , 'Lat', 'Lng'])))
 
 st.header('Data Visualization')
