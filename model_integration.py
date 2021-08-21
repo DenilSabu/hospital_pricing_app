@@ -20,7 +20,7 @@ token = st.secrets['map_token']
 
 # Model
 
-@st.cache(allow_output_mutation=True)
+@st.cache
 def load_files():
     prices = pd.read_parquet('prices_pruned')
     prices.set_index('npi_number', inplace=True)
