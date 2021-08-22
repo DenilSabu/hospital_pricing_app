@@ -54,12 +54,12 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         return self.prices['short_description'].unique().tolist()
 
     def convert_loc(self, address):
-        error_catcher = geocoder.osm(address)
-        if error_catcher.ok:
+        g = geocoder.osm(address)
+        if g.ok == False:
+            return []
+        else:
             g = geocoder.mapbox(address, key=token)
             return [g.json['lat'], g.json['lng']]
-        else:
-            return []
 
     def get_filtered(self, description, cli_loc, threshold):
         patient_lat = cli_loc[0]
