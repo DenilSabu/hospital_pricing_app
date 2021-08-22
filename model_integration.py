@@ -150,11 +150,14 @@ if submit:
     model.threshold = value
     filtered = pd.DataFrame(model.get_filtered((str(address),
                             str(procedure))))
-    st.header('Procedure Pricing')
-    st.dataframe(pd.DataFrame(model.predict(filtered)))
-    st.header('Mapped Data')
-    st.plotly_chart(make_fig(model.get_mean_prices(filtered), address),
-                    use_container_width=True)
-    mean_prices = pd.DataFrame(model.get_mean_prices(filtered))
-    st.dataframe(pd.DataFrame(mean_prices.drop(columns=['npi_number',
-                 'Lat', 'Lng'])))
+    if filtered.empty:
+        st.error('Sorry, no hospitals within radius threshold contains searched procedure.')
+    else:
+        st.header('Procedure Pricing')
+        st.dataframe(pd.DataFrame(model.predict(filtered)))
+        st.header('Mapped Data')
+        st.plotly_chart(make_fig(model.get_mean_prices(filtered), address),
+                        use_container_width=True)
+        mean_prices = pd.DataFrame(model.get_mean_prices(filtered))
+        st.dataframe(pd.DataFrame(mean_prices.drop(columns=['npi_number',
+                     'Lat', 'Lng'])))
