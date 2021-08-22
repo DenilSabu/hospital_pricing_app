@@ -147,6 +147,7 @@ with st.form(key='form_one'):
     submit = st.form_submit_button('Find')
 
 if submit:
+    model.threshold = value
     cli_loc = model.convert_loc(address)
     if not cli_loc:
         st.error('Please enter valid location.')
