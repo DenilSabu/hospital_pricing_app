@@ -87,7 +87,6 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         mean_prices = mean_prices.groupby(by=['npi_number', 'Lat', 'Lng'
                 , 'name', 'url', 'distance'], as_index= False)['price'].mean()
         mean_prices.sort_values(by=['price'], inplace = True)
-        mean_prices.reset_index()
         return mean_prices
 
 
@@ -162,5 +161,7 @@ if submit:
             st.plotly_chart(make_fig(model.get_mean_prices(filtered), cli_loc),
                             use_container_width=True)
             mean_prices = pd.DataFrame(model.get_mean_prices(filtered))
-            st.dataframe(pd.DataFrame(mean_prices.drop(columns=['npi_number',
-                         'Lat', 'Lng'])))
+            mean_prices.drop(columns=['npi_number',
+                         'Lat', 'Lng'])
+            mean_prices.reset_index()
+            st.dataframe(pd.DataFrame(mean_prices))
