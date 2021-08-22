@@ -86,7 +86,8 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
                                ]], on='npi_number')
         mean_prices = mean_prices.groupby(by=['npi_number', 'Lat', 'Lng'
                 , 'name', 'url', 'distance'], as_index= False)['price'].mean()
-        mean_prices.sort_values(by=['price'], inplace = True).reset_index()
+        mean_prices.sort_values(by=['price'], inplace = True)
+        mean_prices.reset_index()
         return mean_prices
 
 
