@@ -77,6 +77,7 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         prediction = {'mean price': filtered['price'].mean(),
                       'min price': filtered['price'].min(),
                       'max price': filtered['price'].max()}
+        prediction.set_index(filtered['code])
         return pd.DataFrame(prediction, index=[0])
 
     def get_mean_prices(self, filtered):
@@ -86,7 +87,7 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
                                ]], on='npi_number')
         mean_prices = mean_prices.groupby(by=['npi_number', 'Lat', 'Lng'
                 , 'name', 'url', 'distance'], as_index= False)['price'].mean()
-        mean_prices.sort_values(by=['price'], inplace = True)
+        mean_prices.sort_values(by=['price'], inplace = True).reset_index()
         return mean_prices
 
 
