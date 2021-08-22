@@ -28,7 +28,7 @@ def load_files():
 
 class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
 
-    def __init__(self, threshold=50):
+    def __init__(self):
 
         self.hospital_loc = pd.read_parquet('hospital_model3')
         self.prices = load_files()
@@ -37,7 +37,7 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         self,
         p_lat,
         p_lng,
-        threshold=50,
+        threshold,
         ):
         
         self.hospital_loc['distance'] = self.hospital_loc.apply(lambda x: \
@@ -61,11 +61,11 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         else:
             return []
 
-    def get_filtered(self, description, cli_loc):
+    def get_filtered(self, description, cli_loc, threshold):
         patient_lat = cli_loc[0]
         patient_lng = cli_loc[1]
         available_hospitals = self._get_distance(patient_lat,
-                patient_lng)
+                patient_lng, threshold)
         available_prices = \
             self.prices.join(available_hospitals.set_index('npi_number'
                              ), on='npi_number', how='inner')
@@ -142,7 +142,7 @@ with st.form(key='form_one'):
     st.title('Hospital Pricing Model')
     address = st.text_input('Enter location')
     procedure = st.selectbox('Choose procedure', model.description())
-    value = st.slider('Radius search for hospitals in miles',
+    threshold = st.slider('Radius search for hospitals in miles',
                       min_value=0, max_value=50)
     submit = st.form_submit_button('Find')
 
@@ -153,7 +153,7 @@ if submit:
         st.error('Please enter valid location.')
     else:
         model.threshold = value
-        filtered = pd.DataFrame(model.get_filtered(procedure, cli_loc))
+        filtered = pd.DataFrame(model.get_filtered(procedure, cli_loc, threshold))
         if filtered.empty:
             st.error('Sorry, no hospitals within radius threshold contains searched procedure.')
         else:
