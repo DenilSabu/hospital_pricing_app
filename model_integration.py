@@ -76,7 +76,7 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
 
     def predict(self, filtered):
         prediction = {'min price': filtered['price'].min(),
-                      'mean price': filtered['price'].mean().round().astype('int'),
+                      'mean price': filtered['price'].mean().astype('int').round(),
                       'max price': filtered['price'].max()}
         return pd.DataFrame(prediction, index=[0])
 
