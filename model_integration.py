@@ -57,14 +57,13 @@ class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
         error_catcher = geocoder.osm(address)
         if error_catcher.ok:
             g = geocoder.mapbox(address, key=token)
-            return (g.json['lat'], g.json['lng'])
+            return [g.json['lat'], g.json['lng']]
         else:
-            st.error('Enter valid location!')
-            sys.exit()
+            return []
 
-    def get_filtered(self, X):
-        (address, description) = X
-        (patient_lat, patient_lng) = self.convert_loc(address)
+    def get_filtered(self, description, cli_loc):
+        patient_lat = cli_loc[0]
+        patient_lng = cli_loc[1]
         available_hospitals = self._get_distance(patient_lat,
                 patient_lng)
         available_prices = \
@@ -98,9 +97,10 @@ model = HospitalPricingClassifier()
 
 # Mapping
 
-def make_fig(mean_prices, address):
+def make_fig(mean_prices, cli_loc):
     fig = go.Figure()
-    (lat, lng) = model.convert_loc(address)
+    lat = cli_loc[0]
+    lng = cli_loc[1]
     fig.add_trace(go.Scattermapbox(
         lat=mean_prices['Lat'],
         lon=mean_prices['Lng'],
@@ -147,17 +147,20 @@ with st.form(key='form_one'):
     submit = st.form_submit_button('Find')
 
 if submit:
-    model.threshold = value
-    filtered = pd.DataFrame(model.get_filtered((str(address),
-                            str(procedure))))
-    if filtered.empty:
-        st.error('Sorry, no hospitals within radius threshold contains searched procedure.')
+    cli_loc = model.convert_loc(address)
+    if not cli_loc:
+        st.error('Please enter valid location.')
     else:
-        st.header('Procedure Pricing')
-        st.dataframe(pd.DataFrame(model.predict(filtered)))
-        st.header('Mapped Data')
-        st.plotly_chart(make_fig(model.get_mean_prices(filtered), address),
-                        use_container_width=True)
-        mean_prices = pd.DataFrame(model.get_mean_prices(filtered))
-        st.dataframe(pd.DataFrame(mean_prices.drop(columns=['npi_number',
-                     'Lat', 'Lng'])))
+        model.threshold = value
+        filtered = pd.DataFrame(model.get_filtered(procedure, cli_loc))
+        if filtered.empty:
+            st.error('Sorry, no hospitals within radius threshold contains searched procedure.')
+        else:
+            st.header('Procedure Pricing')
+            st.dataframe(pd.DataFrame(model.predict(filtered)))
+            st.header('Mapped Data')
+            st.plotly_chart(make_fig(model.get_mean_prices(filtered), cli_loc),
+                            use_container_width=True)
+            mean_prices = pd.DataFrame(model.get_mean_prices(filtered))
+            st.dataframe(pd.DataFrame(mean_prices.drop(columns=['npi_number',
+                         'Lat', 'Lng'])))
