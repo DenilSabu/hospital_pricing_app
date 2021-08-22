@@ -147,12 +147,10 @@ with st.form(key='form_one'):
     submit = st.form_submit_button('Find')
 
 if submit:
-    model.threshold = value
     cli_loc = model.convert_loc(address)
     if not cli_loc:
         st.error('Please enter valid location.')
     else:
-        model.threshold = value
         filtered = pd.DataFrame(model.get_filtered(procedure, cli_loc, threshold))
         if filtered.empty:
             st.error('Sorry, no hospitals within radius threshold contains searched procedure.')
