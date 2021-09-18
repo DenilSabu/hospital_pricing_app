@@ -139,6 +139,9 @@ def make_fig(mean_prices, cli_loc):
 # Streamlit
 
 with st.form(key='form_one'):
+    st.dataframe(pd.read_parquet('hospital_model3').head(5))
+    p = load_files()
+    st.dataframe(p.head(5))
     st.title('Hospital Pricing Model')
     address = st.text_input('Enter location')
     procedure = st.selectbox('Choose procedure', model.description())
