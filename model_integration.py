@@ -56,7 +56,7 @@ class HospitalPricingClassifier():
     
     def convert_address(self, lat, lng):
         latlng = [lat, lng]
-        g = geocoder.mapbox(latlng, method='reverse')
+        g = geocoder.mapbox(latlng, method='reverse', key = token)
         return g.json['address']
 
     
