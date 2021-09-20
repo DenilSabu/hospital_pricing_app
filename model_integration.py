@@ -1,13 +1,10 @@
 # Imports
 from os import system
-from pandas.core.algorithms import mode
-from pandas.core.frame import DataFrame
 import streamlit as st
 import pandas as pd
 import geocoder
 import numpy as np
 import json
-from sklearn.base import BaseEstimator, ClassifierMixin
 from geopy.distance import geodesic
 import plotly.graph_objects as go
 import sys
@@ -26,7 +23,7 @@ def load_files():
     return prices
 
 
-class HospitalPricingClassifier(BaseEstimator, ClassifierMixin):
+class HospitalPricingClassifier():
 
     def __init__(self):
 
