@@ -172,10 +172,8 @@ with st.form(key='form_two'):
 if search:
     hospital_df = model.hospital_list()
     searched_row = hospital_df.loc[hospital_df['name'] == searched_hospital]
-    st.dataframe(searched_row)
-    searched_row = searched_row.tolist();
     st.header('Hospital Information')
     st.text('Hospital: ' + str(searched_hospital))
-    st.text('NPI Number: ' + str(searched_row[0]))
-    st.text('URL: ' + str(searched_row[2]))
+    st.text('NPI Number: ' + str(searched_row.loc[0,'npi_number']))
+    st.text('URL: ' + str(searched_row.loc[0,'url']))
     st.text('Address: ' + str(1))
