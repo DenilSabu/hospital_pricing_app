@@ -172,6 +172,7 @@ with st.form(key='form_two'):
 if search:
     hospital_df = model.hospital_list()
     searched_row = hospital_df.loc[hospital_df['name'] == searched_hospital]
+    st.dataframe(searched_row)
     searched_row = searched_row.tolist();
     st.header('Hospital Information')
     st.text('Hospital: ' + str(searched_hospital))
