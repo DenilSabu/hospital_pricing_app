@@ -45,7 +45,7 @@ class HospitalPricingClassifier():
                 ['npi_number']]
     
     def hospital_list(self):
-        return self.hospital_loc['name'].tolist()
+        return self.hospital_loc
 
     def description(self):
         return self.prices['short_description'].unique().tolist()
@@ -166,4 +166,11 @@ if submit:
 
 with st.form(key='form_two'):
     st.title('Hospital List')
-    st.selectbox('Find Hospital', model.hospital_list())
+    st.selectbox('Search if your hospital is included!', model.hospital_list()['name'].tolist())
+    search = st.form_submit_button('search')
+
+if search:
+    st.header('Hospital: ' +)
+    st.header('NPI Number: ' +)
+    st.header('URL: ' +)
+    st.header('Address: ' +)
