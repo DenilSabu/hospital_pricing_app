@@ -143,11 +143,6 @@ with st.form(key='form_one'):
                       min_value=0, max_value=50)
     submit = st.form_submit_button('Find')
     
-
-st.title('Hospital List')
-st.selectbox('Find Hospital', model.hospital_list())
-
-
 if submit:
     cli_loc = model.convert_loc(address)
     if not cli_loc:
@@ -167,3 +162,8 @@ if submit:
                          'Lat', 'Lng'], inplace = True)
             mean_prices.reset_index()
             st.dataframe(pd.DataFrame(mean_prices))
+
+
+with st.form(key='form_two'):
+    st.title('Hospital List')
+    st.selectbox('Find Hospital', model.hospital_list())
