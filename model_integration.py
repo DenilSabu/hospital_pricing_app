@@ -170,7 +170,7 @@ with st.form(key='form_two'):
     search = st.form_submit_button('search')
 
 if search:
-    st.header('Hospital: ' +)
-    st.header('NPI Number: ' +)
-    st.header('URL: ' +)
-    st.header('Address: ' +)
+    st.header('Hospital: ' + 1)
+    st.header('NPI Number: ' + 1)
+    st.header('URL: ' + 1)
+    st.header('Address: ' + 1)
