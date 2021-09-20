@@ -167,10 +167,10 @@ if submit:
 with st.form(key='form_two'):
     st.title('Hospital List')
     st.selectbox('Search if your hospital is included!', model.hospital_list()['name'].tolist())
-    search = st.form_submit_button('search')
+    search = st.form_submit_button('Search')
 
 if search:
-    st.header('Hospital: ' + 1)
-    st.header('NPI Number: ' + 1)
-    st.header('URL: ' + 1)
-    st.header('Address: ' + 1)
+    st.header('Hospital: ' + str(1))
+    st.header('NPI Number: ' + str(1))
+    st.header('URL: ' + str(1))
+    st.header('Address: ' + str(1))
