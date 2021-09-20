@@ -174,6 +174,6 @@ if search:
     searched_row = hospital_df.loc[hospital_df['name'] == searched_hospital]
     st.header('Hospital Information')
     st.text('Hospital: ' + str(searched_hospital))
-    st.text('NPI Number: ' + str(searched_row.loc[0,'npi_number']))
-    st.text('URL: ' + str(searched_row.loc[0,'url']))
+    st.text('NPI Number: ' + str(searched_row['npi_number'].iloc[0]))
+    st.text('URL: ' + str(searched_row['url'].iloc[0]))
     st.text('Address: ' + str(1))
