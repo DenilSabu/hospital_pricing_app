@@ -30,6 +30,7 @@ class HospitalPricingClassifier():
         self.hospital_loc = pd.read_parquet('hospital_model3')
         self.prices = load_files()
 
+    
     def _get_distance(
         self,
         p_lat,
@@ -44,12 +45,21 @@ class HospitalPricingClassifier():
         return self.hospital_loc.loc[self.hospital_loc['distance'] <= threshold,
                 ['npi_number']]
     
+    
     def hospital_list(self):
         return self.hospital_loc
 
+    
     def description(self):
         return self.prices['short_description'].unique().tolist()
+    
+    
+    def convert_address(self, lat, lng):
+        latlng = [lat, lng]
+        g = geocoder.mapbox(latlng, method='reverse')
+        return g.json['address']
 
+    
     def convert_loc(self, address):
         g = geocoder.osm(address)
         if g.ok == False:
@@ -58,6 +68,7 @@ class HospitalPricingClassifier():
             g = geocoder.mapbox(address, key=token)
             return [g.json['lat'], g.json['lng']]
 
+    
     def get_filtered(self, description, cli_loc, threshold):
         patient_lat = cli_loc[0]
         patient_lng = cli_loc[1]
@@ -70,12 +81,14 @@ class HospitalPricingClassifier():
             available_prices.loc[available_prices.short_description.str.contains(description.upper())].reset_index()
         return filtered
 
+    
     def predict(self, filtered):
         prediction = {'mean price': filtered['price'].mean(),
                       'min price': filtered['price'].min(),
                       'max price': filtered['price'].max()}
         return pd.DataFrame(prediction, index=[0])
 
+    
     def get_mean_prices(self, filtered):
         prices = self.hospital_loc.loc[self.hospital_loc['npi_number'
                 ].isin(filtered['npi_number'].tolist())]
@@ -172,8 +185,10 @@ with st.form(key='form_two'):
 if search:
     hospital_df = model.hospital_list()
     searched_row = hospital_df.loc[hospital_df['name'] == searched_hospital]
+    lat = searched_row['Lat'].iloc[0]
+    lng = searched_row['Lng'].iloc[0]
     st.header('Hospital Information')
     st.text('Hospital: ' + str(searched_hospital))
     st.text('NPI Number: ' + str(searched_row['npi_number'].iloc[0]))
     st.text('URL: ' + str(searched_row['url'].iloc[0]))
-    st.text('Address: ' + str(1))
+    st.text('Address: ' + str(model.convert_address(lat, lng)))
