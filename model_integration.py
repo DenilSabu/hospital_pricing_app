@@ -143,6 +143,7 @@ with st.form(key='form_one'):
                       min_value=0, max_value=50)
     submit = st.form_submit_button('Find')
 
+
 if submit:
     cli_loc = model.convert_loc(address)
     if not cli_loc:
