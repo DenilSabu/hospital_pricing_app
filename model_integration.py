@@ -166,11 +166,15 @@ if submit:
 
 with st.form(key='form_two'):
     st.title('Hospital List')
-    st.selectbox('Search if your hospital is included!', model.hospital_list()['name'].tolist())
+    searched_hospital = st.selectbox('Search if your hospital is included!', model.hospital_list()['name'].tolist())
     search = st.form_submit_button('Search')
 
 if search:
-    st.header('Hospital: ' + str(1))
-    st.header('NPI Number: ' + str(1))
-    st.header('URL: ' + str(1))
-    st.header('Address: ' + str(1))
+    hospital_df = model.hospital_list()
+    searched_row = hospital_df.loc[hospital_df['name'] == searched_hospital]
+    selected_row = selected_row.tolist();
+    st.header('Hospital Information')
+    st.text('Hospital: ' + str(searched_hospital))
+    st.text('NPI Number: ' + str(selected_row[0]))
+    st.text('URL: ' + str(selected_row[2]))
+    st.text('Address: ' + str(1))
