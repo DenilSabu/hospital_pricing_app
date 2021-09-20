@@ -43,9 +43,9 @@ class HospitalPricingClassifier():
 
         return self.hospital_loc.loc[self.hospital_loc['distance'] <= threshold,
                 ['npi_number']]
-
-    def fit(self):
-        return self
+    
+    def hospital_list(self):
+        return self.hospital_loc['name'].tolist()
 
     def description(self):
         return self.prices['short_description'].unique().tolist()
@@ -142,6 +142,10 @@ with st.form(key='form_one'):
     threshold = st.slider('Radius search for hospitals in miles',
                       min_value=0, max_value=50)
     submit = st.form_submit_button('Find')
+    
+
+st.title('Hospital List')
+st.selectbox('Find Hospital', model.hospital_list())
 
 
 if submit:
