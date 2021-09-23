@@ -27,6 +27,15 @@ def load_files():
     prices.set_index('npi_number', inplace=True)
     return prices
 
+def doesFileExists(filePathAndName):
+    return os.path.exists(filePathAndName)
+  
+# Example
+if doesFileExists('./test.json'):
+  st.write ('Yaa it exists!')
+else:
+  st.write ('Nope! Not around')
+
 #def load_hospitals():
     #hospitals =  pd.read_parquet('hospital_model3')
     #if file exists:
