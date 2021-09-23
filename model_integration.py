@@ -187,6 +187,8 @@ with st.form(key='form_two'):
     searched_hospital = st.selectbox('Search if your hospital is included!', model.hospital_list()['name'].tolist())
     search = st.form_submit_button('Search')
 
+npi_number = "1053359729"
+
 if search:
     hospital_df = model.hospital_list()
     searched_row = hospital_df.loc[hospital_df['name'] == searched_hospital]
@@ -198,9 +200,9 @@ if search:
     st.text('NPI Number: ' + npi_number)
     st.text('URL: ' + str(searched_row['url'].iloc[0]))
     st.text('Address: ' + str(model.convert_address(lat, lng)))
+    unittest.main()
     
     
-unittest.main()
 # Find NPI number
 
 class FindNPI(unittest.TestCase):
