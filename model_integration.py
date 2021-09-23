@@ -27,6 +27,13 @@ def load_files():
     prices.set_index('npi_number', inplace=True)
     return prices
 
+#def load_hospitals():
+    #hospitals =  pd.read_parquet('hospital_model3')
+    #if file exists:
+     #   open it and get npi number
+     #   pass it through findNPI()
+     #   create dataframe from info
+      #  append it to hospitals 
 
 class HospitalPricingClassifier():
 
@@ -135,12 +142,14 @@ def findNPI(npi_number):
 
     npi_button = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/form/div[7]/div/div/input[2]")
     npi_button.click()
+    
+    if (len(str(auth)) > 8):
+        hospital_name = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[2]").text
+        hospital_address = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[4]").text
+        hospital_address = hospital_address.replace("\n", " ")
+        st.write(hospital_name)
+        st.write(hospital_address)
 
-    hospital_name = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[2]").text
-    hospital_address = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[4]").text
-    hospital_address = hospital_address.replace("\n", " ")
-    st.write(hospital_name)
-    st.write(hospital_address)
     driver.quit()
 
 
