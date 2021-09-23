@@ -9,9 +9,14 @@ from geopy.distance import geodesic
 import plotly.graph_objects as go
 import sys
 import pyarrow
+import unittest
+import sys
+from selenium import webdriver
 
 sys.tracebacklimit = 0
 token = st.secrets['map_token']
+username = st.secrets['username']
+access_key = st.secrets['access_key']
 
 
 # Model
@@ -189,6 +194,60 @@ if search:
     lng = searched_row['Lng'].iloc[0]
     st.header('Hospital Information')
     st.text('Hospital: ' + str(searched_hospital))
-    st.text('NPI Number: ' + str(searched_row['npi_number'].iloc[0]))
+    npi_number = str(searched_row['npi_number'].iloc[0])
+    st.text('NPI Number: ' + npi_number)
     st.text('URL: ' + str(searched_row['url'].iloc[0]))
     st.text('Address: ' + str(model.convert_address(lat, lng)))
+    
+    
+unittest.main()
+# Find NPI number
+
+class FindNPI(unittest.TestCase):
+   
+    def setUp(self):
+        desired_caps = {
+            "build": "PyunitTest sample build", 
+            "name": "Py-unittest",  
+            "platform": "Windows 10",  
+            "browserName": "Firefox",  
+            "version": "92.0", 
+            "resolution": "1024x768",  
+            "console": "true",  
+            "network": "true", 
+        }
+        self.driver = webdriver.Remote(
+            command_executor="https://{}:{}@hub.lambdatest.com/wd/hub".format(
+                username, access_key
+            ),
+            desired_capabilities=desired_caps,
+        )
+
+        
+    def tearDown(self):
+        self.driver.quit()
+
+        
+    def test_get_npi(self):
+        driver = self.driver
+
+        driver.get("https://npiregistry.cms.hhs.gov/")
+
+        npi_box = driver.find_element_by_name("number")
+        npi_box.send_keys(npi_number)
+
+        npi_button = driver.find_element_by_xpath(
+            "/html/body/div[2]/div[2]/div/form/div[7]/div/div/input[2]"
+        )
+        npi_button.click()
+
+        hospital_name = driver.find_element_by_xpath(
+            "/html/body/div[2]/div[2]/div/table/tbody/tr/td[2]"
+        ).text
+        hospital_address = driver.find_element_by_xpath(
+            "/html/body/div[2]/div[2]/div/table/tbody/tr/td[4]"
+        ).text
+        hospital_address = hospital_address.replace("\n", " ")
+        st.write(hospital_name)
+        st.write(hospital_address)
+
