@@ -109,8 +109,42 @@ class HospitalPricingClassifier():
 
 model = HospitalPricingClassifier()
 
+# Find NPI number from Git
 
-# Mapping
+def findNPI(npi_number):
+    
+    desired_caps = {
+        "build": 'PyunitTest sample build', # Change your build name here
+        "name": 'Py-unittest', # Change your test name here
+        "platform": 'Windows 10', # Change your OS version here
+        "browserName": 'Firefox', # Change your browser here
+        "version": '92.0', # Change your browser version here
+        "resolution": '1024x768', # Change your resolution here
+        "console": 'true', # Enable or disable console logs
+        "network":'true'   # Enable or disable network logs
+    }
+
+    driver = webdriver.Remote(
+        command_executor="https://{}:{}@hub.lambdatest.com/wd/hub".format(username, access_key),
+        desired_capabilities= desired_caps)
+
+    driver.get('https://npiregistry.cms.hhs.gov/')
+
+    npi_box = driver.find_element_by_name('number')
+    npi_box.send_keys(npi_number)
+
+    npi_button = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/form/div[7]/div/div/input[2]")
+    npi_button.click()
+
+    hospital_name = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[2]").text
+    hospital_address = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[4]").text
+    hospital_address = hospital_address.replace("\n", " ")
+    st.write(hospital_name)
+    st.write(hospital_address)
+    driver.quit()
+
+
+# Mapping with Plotly
 
 def make_fig(mean_prices, cli_loc):
     fig = go.Figure()
@@ -199,38 +233,3 @@ if search:
     st.text('URL: ' + str(searched_row['url'].iloc[0]))
     st.text('Address: ' + str(model.convert_address(lat, lng)))
     findNPI(npi_number)
-
-# Find NPI number from Git
-
-def findNPI(npi_number):
-    
-    desired_caps = {
-        "build": 'PyunitTest sample build', # Change your build name here
-        "name": 'Py-unittest', # Change your test name here
-        "platform": 'Windows 10', # Change your OS version here
-        "browserName": 'Firefox', # Change your browser here
-        "version": '92.0', # Change your browser version here
-        "resolution": '1024x768', # Change your resolution here
-        "console": 'true', # Enable or disable console logs
-        "network":'true'   # Enable or disable network logs
-    }
-
-    driver = webdriver.Remote(
-        command_executor="https://{}:{}@hub.lambdatest.com/wd/hub".format(username, access_key),
-        desired_capabilities= desired_caps)
-
-    driver.get('https://npiregistry.cms.hhs.gov/')
-
-    npi_box = driver.find_element_by_name('number')
-    npi_box.send_keys(npi_number)
-
-    npi_button = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/form/div[7]/div/div/input[2]")
-    npi_button.click()
-
-    hospital_name = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[2]").text
-    hospital_address = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[4]").text
-    hospital_address = hospital_address.replace("\n", " ")
-    st.write(hospital_name)
-    st.write(hospital_address)
-    driver.quit()
-
