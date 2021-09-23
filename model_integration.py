@@ -32,7 +32,7 @@ def doesFileExists(filePathAndName):
     return os.path.exists(filePathAndName)
   
 # Example
-if doesFileExists('./test.json'):
+if doesFileExists('hospital_model3'):
   st.write ('Yaa it exists!')
 else:
   st.write ('Nope! Not around')
