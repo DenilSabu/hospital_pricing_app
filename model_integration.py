@@ -187,7 +187,7 @@ with st.form(key='form_two'):
     searched_hospital = st.selectbox('Search if your hospital is included!', model.hospital_list()['name'].tolist())
     search = st.form_submit_button('Search')
 
-npi_number = "1053359729"
+npi_numbers = "1053359729"
 
 if search:
     hospital_df = model.hospital_list()
@@ -236,7 +236,7 @@ class FindNPI(unittest.TestCase):
         driver.get("https://npiregistry.cms.hhs.gov/")
 
         npi_box = driver.find_element_by_name("number")
-        npi_box.send_keys(npi_number)
+        npi_box.send_keys(npi_numbers)
 
         npi_button = driver.find_element_by_xpath(
             "/html/body/div[2]/div[2]/div/form/div[7]/div/div/input[2]"
