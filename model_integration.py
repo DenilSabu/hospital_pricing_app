@@ -187,8 +187,6 @@ with st.form(key='form_two'):
     searched_hospital = st.selectbox('Search if your hospital is included!', model.hospital_list()['name'].tolist())
     search = st.form_submit_button('Search')
 
-npi_numbers = "1053359729"
-
 if search:
     hospital_df = model.hospital_list()
     searched_row = hospital_df.loc[hospital_df['name'] == searched_hospital]
@@ -200,56 +198,39 @@ if search:
     st.text('NPI Number: ' + npi_number)
     st.text('URL: ' + str(searched_row['url'].iloc[0]))
     st.text('Address: ' + str(model.convert_address(lat, lng)))
-    unittest.main()
+    findNPI(npi_number)
+
+# Find NPI number from Git
+
+def findNPI(npi_number):
     
-    
-# Find NPI number
+    desired_caps = {
+        "build": 'PyunitTest sample build', # Change your build name here
+        "name": 'Py-unittest', # Change your test name here
+        "platform": 'Windows 10', # Change your OS version here
+        "browserName": 'Firefox', # Change your browser here
+        "version": '92.0', # Change your browser version here
+        "resolution": '1024x768', # Change your resolution here
+        "console": 'true', # Enable or disable console logs
+        "network":'true'   # Enable or disable network logs
+    }
 
-class FindNPI(unittest.TestCase):
-   
-    def setUp(self):
-        desired_caps = {
-            "build": "PyunitTest sample build", 
-            "name": "Py-unittest",  
-            "platform": "Windows 10",  
-            "browserName": "Firefox",  
-            "version": "92.0", 
-            "resolution": "1024x768",  
-            "console": "true",  
-            "network": "true", 
-        }
-        self.driver = webdriver.Remote(
-            command_executor="https://{}:{}@hub.lambdatest.com/wd/hub".format(
-                username, access_key
-            ),
-            desired_capabilities=desired_caps,
-        )
+    driver = webdriver.Remote(
+        command_executor="https://{}:{}@hub.lambdatest.com/wd/hub".format(username, access_key),
+        desired_capabilities= desired_caps)
 
-        
-    def tearDown(self):
-        self.driver.quit()
+    driver.get('https://npiregistry.cms.hhs.gov/')
 
-        
-    def test_get_npi(self):
-        driver = self.driver
+    npi_box = driver.find_element_by_name('number')
+    npi_box.send_keys(npi_number)
 
-        driver.get("https://npiregistry.cms.hhs.gov/")
+    npi_button = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/form/div[7]/div/div/input[2]")
+    npi_button.click()
 
-        npi_box = driver.find_element_by_name("number")
-        npi_box.send_keys(npi_numbers)
-
-        npi_button = driver.find_element_by_xpath(
-            "/html/body/div[2]/div[2]/div/form/div[7]/div/div/input[2]"
-        )
-        npi_button.click()
-
-        hospital_name = driver.find_element_by_xpath(
-            "/html/body/div[2]/div[2]/div/table/tbody/tr/td[2]"
-        ).text
-        hospital_address = driver.find_element_by_xpath(
-            "/html/body/div[2]/div[2]/div/table/tbody/tr/td[4]"
-        ).text
-        hospital_address = hospital_address.replace("\n", " ")
-        st.write(hospital_name)
-        st.write(hospital_address)
+    hospital_name = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[2]").text
+    hospital_address = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[4]").text
+    hospital_address = hospital_address.replace("\n", " ")
+    st.write(hospital_name)
+    st.write(hospital_address)
+    driver.quit()
 
