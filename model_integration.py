@@ -49,7 +49,7 @@ def load_hospitals():
             new_df = pd.DataFrame(set_up_df, index = [0])
             st.write(new_df)
             hospital_df.append(new_df)
-            searched_row = hospital_df.loc[hospital_df['name'] == 'Denil']
+            searched_row = hospital_df.loc[hospital_df['name'] == new_df.loc[new_df['name'], 0]]
             st.write(searched_row)
       
     return hospital_df
