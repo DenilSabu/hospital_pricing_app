@@ -47,9 +47,8 @@ def load_hospitals():
                         'Lng': 0.0
                      }
             new_df = pd.DataFrame(set_up_df, index = [0])
-            st.write(test)
             hospitals.append(new_df, inplace = True)
-            
+      
     return hospitals
 
             
