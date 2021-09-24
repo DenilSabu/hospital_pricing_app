@@ -23,7 +23,7 @@ access_key = st.secrets['access_key']
 # Preproccessing 
 
 @st.cache
-def load_files():
+def load_prices():
     prices = pd.read_parquet('prices_pruned')
     prices.set_index('npi_number', inplace=True)
     return prices
@@ -41,6 +41,8 @@ def load_hospitals():
         if test[0] in hospitals['npi_number'].values:
             new_df = pd.Dataframe([test[0], 'Denil', test[1], 0.0, 0.0], columns  = ['npi_number', 'name', 'url', 'Lat', 'Lng'], ignore_index=True)
             hospitals.append(new_df)
+            
+    return hospitals
 
             
 def convert_address(lat, lng):
@@ -63,7 +65,7 @@ class HospitalPricingClassifier():
 
     def __init__(self):
 
-        self.hospital_loc = pd.read_parquet('hospital_model3')
+        self.hospital_loc = load_hospitals()
         self.prices = load_files()
 
     
