@@ -37,11 +37,10 @@ def load_hospitals():
         with open('test.txt') as f:
             for line in f:
                 test.append(line.replace("\n", ""))
-        
-        st.write(test)
                 
         if test[0] not in hospitals['npi_number'].unique():
             new_df = pd.DataFrame([test[0], 'Denil', test[1], 0.0, 0.0], columns  = ['npi_number', 'name', 'url', 'Lat', 'Lng'])
+            st.write(test)
             hospitals.append(new_df)
             
     return hospitals
