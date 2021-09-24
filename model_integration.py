@@ -47,10 +47,7 @@ def load_hospitals():
                         'Lng': 0.0
                      }
             new_df = pd.DataFrame(set_up_df, index = [0])
-            st.write(new_df)
             hospital_df = hospital_df.append(new_df)
-            searched_row = hospital_df.loc[hospital_df['name'] == new_df.iloc[0,1]]
-            st.write(searched_row)
       
     return hospital_df
 
