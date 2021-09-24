@@ -230,7 +230,7 @@ if submit:
             st.plotly_chart(make_fig(model.get_mean_prices(filtered), cli_loc),
                             use_container_width=True)
             mean_prices = pd.DataFrame(model.get_mean_prices(filtered))
-            mean_prices.drop(columns=['npi_number',
+            mean_prices.drop(columns=['npi_number', 'url'
                          'Lat', 'Lng'], inplace = True)
             mean_prices.reset_index()
             st.dataframe(pd.DataFrame(mean_prices))
