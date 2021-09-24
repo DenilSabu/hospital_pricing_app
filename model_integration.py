@@ -161,6 +161,8 @@ def findNPI(npi_number):
     npi_button = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/form/div[7]/div/div/input[2]")
     npi_button.click()
     
+    auth =  driver.find_element_by_id("508focusheader").text
+    
     if (len(str(auth)) > 8):
         hospital_name = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[2]").text
         hospital_address = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[4]").text
