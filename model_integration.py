@@ -66,7 +66,7 @@ class HospitalPricingClassifier():
     def __init__(self):
 
         self.hospital_loc = load_hospitals()
-        self.prices = load_files()
+        self.prices = load_prices()
 
     
     def _get_distance(
