@@ -216,7 +216,7 @@ with st.form(key='form_one'):
     submit = st.form_submit_button('Find')
     
 if submit:
-    cli_loc = model.convert_loc(address)
+    cli_loc = convert_loc(address)
     if not cli_loc:
         st.error('Please enter valid location.')
     else:
@@ -251,5 +251,5 @@ if search:
     npi_number = str(searched_row['npi_number'].iloc[0])
     st.text('NPI Number: ' + npi_number)
     st.text('URL: ' + str(searched_row['url'].iloc[0]))
-    st.text('Address: ' + str(model.convert_address(lat, lng)))
+    st.text('Address: ' + str(convert_address(lat, lng)))
     findNPI(npi_number)
