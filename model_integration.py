@@ -37,6 +37,8 @@ def load_hospitals():
         with open('test.txt') as f:
             for line in f:
                 test.append(line.replace("\n", ""))
+        
+        st.write(test)
                 
         if test[0] in hospitals['npi_number'].values:
             new_df = pd.Dataframe([test[0], 'Denil', test[1], 0.0, 0.0], columns  = ['npi_number', 'name', 'url', 'Lat', 'Lng'], ignore_index=True)
