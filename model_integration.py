@@ -43,8 +43,8 @@ def load_hospitals():
                         'npi_number': test[0],
                         'name': 'Denil',
                         'url': test[1],
-                        'Lat': 0.0,
-                        'Lng': 0.0
+                        'Lat': 22.22,
+                        'Lng': 22.22
                      }
             new_df = pd.DataFrame(set_up_df, index = [0])
             hospital_df = hospital_df.append(new_df)
