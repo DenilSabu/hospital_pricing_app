@@ -39,7 +39,14 @@ def load_hospitals():
                 test.append(line.replace("\n", ""))
                 
         if test[0] not in hospitals['npi_number'].unique():
-            new_df = pd.DataFrame([test[0], 'Denil', test[1], 0.0, 0.0], columns  = ['npi_number', 'name', 'url', 'Lat', 'Lng'])
+            set_up_df = {
+                        'npi_number': test[0],
+                        'name': 'Denil',
+                        'url': test[1],
+                        'Lat': 0.0,
+                        'Lng': 0.0
+                     }
+            new_df = pd.DataFrame(set_up_df)
             st.write(test)
             hospitals.append(new_df)
             
