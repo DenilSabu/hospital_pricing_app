@@ -46,7 +46,7 @@ def load_hospitals():
                         'Lat': 0.0,
                         'Lng': 0.0
                      }
-            new_df = pd.DataFrame(set_up_df)
+            new_df = pd.DataFrame(set_up_df, index = [0])
             st.write(test)
             hospitals.append(new_df)
             
