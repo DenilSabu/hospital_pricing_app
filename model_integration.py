@@ -30,7 +30,7 @@ def load_prices():
 
 
 def load_hospitals():
-    hospitals =  pd.read_parquet('hospital_model3')
+    hospital_df =  pd.read_parquet('hospital_model3')
     if os.path.exists('test.txt'):
         test = []
         
@@ -48,9 +48,11 @@ def load_hospitals():
                      }
             new_df = pd.DataFrame(set_up_df, index = [0])
             st.write(new_df)
-            hospitals.append(new_df)
+            hospital_df.append(new_df)
+            searched_row = hospital_df.loc[hospital_df['name'] == 'Denil']
+            st.write(searched_row)
       
-    return hospitals
+    return hospital_df
 
             
 def convert_address(lat, lng):
