@@ -20,7 +20,7 @@ username = st.secrets['username']
 access_key = st.secrets['access_key']
 
 
-# Model
+# Preproccessing 
 
 @st.cache
 def load_files():
@@ -28,22 +28,36 @@ def load_files():
     prices.set_index('npi_number', inplace=True)
     return prices
 
-def doesFileExists(filePathAndName):
-    return os.path.exists(filePathAndName)
-  
-# Example
-if doesFileExists('hospital_model3'):
-  st.write ('Yaa it exists!')
-else:
-  st.write ('Nope! Not around')
 
-#def load_hospitals():
-    #hospitals =  pd.read_parquet('hospital_model3')
-    #if file exists:
-     #   open it and get npi number
-     #   pass it through findNPI()
-     #   create dataframe from info
-      #  append it to hospitals 
+def load_hospitals():
+    hospitals =  pd.read_parquet('hospital_model3')
+    if os.path.exists('test.txt'):
+        test = []
+        
+        with open('test.txt') as f:
+            for line in f:
+                test.append(line.replace("\n", ""))
+                
+        if test[0] in hospitals['npi_number'].values:
+            new_df = pd.Dataframe([test[0], 'Denil', test[1], 0.0, 0.0], columns list = ['npi_number', 'name', 'url', 'Lat', 'Lng'] ignore_index=True)
+            hospitals.append(new_df)
+
+            
+def convert_address(lat, lng):
+        latlng = [lat, lng]
+        g = geocoder.mapbox(latlng, method='reverse', key = token)
+        return g.json['address']
+    
+    
+def convert_loc(address):
+        g = geocoder.osm(address)
+        if g.ok == False:
+            return []
+        else:
+            g = geocoder.mapbox(address, key=token)
+            return [g.json['lat'], g.json['lng']]
+    
+#Model  
 
 class HospitalPricingClassifier():
 
@@ -74,22 +88,7 @@ class HospitalPricingClassifier():
     
     def description(self):
         return self.prices['short_description'].unique().tolist()
-    
-    
-    def convert_address(self, lat, lng):
-        latlng = [lat, lng]
-        g = geocoder.mapbox(latlng, method='reverse', key = token)
-        return g.json['address']
-
-    
-    def convert_loc(self, address):
-        g = geocoder.osm(address)
-        if g.ok == False:
-            return []
-        else:
-            g = geocoder.mapbox(address, key=token)
-            return [g.json['lat'], g.json['lng']]
-
+   
     
     def get_filtered(self, description, cli_loc, threshold):
         patient_lat = cli_loc[0]
@@ -131,14 +130,14 @@ model = HospitalPricingClassifier()
 def findNPI(npi_number):
     
     desired_caps = {
-        "build": 'PyunitTest sample build', # Change your build name here
-        "name": 'Py-unittest', # Change your test name here
-        "platform": 'Windows 10', # Change your OS version here
-        "browserName": 'Firefox', # Change your browser here
-        "version": '92.0', # Change your browser version here
-        "resolution": '1024x768', # Change your resolution here
-        "console": 'true', # Enable or disable console logs
-        "network":'true'   # Enable or disable network logs
+        "build": 'PyunitTest sample build',
+        "name": 'Py-unittest',
+        "platform": 'Windows 10', 
+        "browserName": 'Firefox', 
+        "version": '92.0',
+        "resolution": '1024x768', 
+        "console": 'true', 
+        "network":'true'   
     }
 
     driver = webdriver.Remote(
@@ -157,9 +156,9 @@ def findNPI(npi_number):
         hospital_name = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[2]").text
         hospital_address = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[4]").text
         hospital_address = hospital_address.replace("\n", " ")
-        st.write(hospital_name)
-        st.write(hospital_address)
-
+        driver.quit()
+        return hospital_name, hospital_address
+    
     driver.quit()
 
 
