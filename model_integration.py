@@ -38,7 +38,7 @@ def load_hospitals():
             for line in f:
                 test.append(line.replace("\n", ""))
                 
-        if test[0] not in hospitals['npi_number'].unique():
+        if test[0] not in hospital_df['npi_number'].unique():
             set_up_df = {
                         'npi_number': test[0],
                         'name': 'Denil',
