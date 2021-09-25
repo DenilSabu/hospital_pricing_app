@@ -29,27 +29,27 @@ def load_prices():
     return prices
 
 
-def load_hospitals():
-    hospital_df =  pd.read_parquet('hospital_model3')
-    if os.path.exists('test.txt'):
-        test = []
+#def load_hospitals():
+#    hospital_df =  pd.read_parquet('hospital_model3')
+#    if os.path.exists('test.txt'):
+#        test = []
         
-        with open('test.txt') as f:
-            for line in f:
-                test.append(line.replace("\n", ""))
+#       with open('test.txt') as f:
+#            for line in f:
+#                test.append(line.replace("\n", ""))
                 
-        if test[0] not in hospital_df['npi_number'].unique():
-            set_up_df = {
-                        'npi_number': test[0],
-                        'name': 'Denil',
-                        'url': test[1],
-                        'Lat': 22.22,
-                        'Lng': 22.22
-                     }
-            new_df = pd.DataFrame(set_up_df, index = [0])
-            hospital_df = hospital_df.append(new_df)
-      
-    return hospital_df
+#        if test[0] not in hospital_df['npi_number'].unique():
+#            set_up_df = {
+#                        'npi_number': test[0],
+#                        'name': 'Denil',
+#                        'url': test[1],
+#                        'Lat': 22.22,
+#                        'Lng': 22.22
+#                     }
+#            new_df = pd.DataFrame(set_up_df, index = [0])
+#            hospital_df = hospital_df.append(new_df)
+#      
+#    return hospital_df
 
             
 def convert_address(lat, lng):
@@ -72,7 +72,7 @@ class HospitalPricingClassifier():
 
     def __init__(self):
 
-        self.hospital_loc = load_hospitals()
+        self.hospital_loc = pd.read_parquet('hospital_model3')
         self.prices = load_prices()
 
     
@@ -261,4 +261,4 @@ if search:
     st.text('NPI Number: ' + npi_number)
     st.text('URL: ' + str(searched_row['url'].iloc[0]))
     st.text('Address: ' + str(convert_address(lat, lng)))
-    findNPI(npi_number)
+    #findNPI(npi_number)
