@@ -10,9 +10,7 @@ from geopy.distance import geodesic
 import plotly.graph_objects as go
 import sys
 import pyarrow
-import unittest
 import sys
-from selenium import webdriver
 
 sys.tracebacklimit = 0
 token = st.secrets['map_token']
@@ -29,29 +27,6 @@ def load_prices():
     return prices
 
 
-#def load_hospitals():
-#    hospital_df =  pd.read_parquet('hospital_model3')
-#    if os.path.exists('test.txt'):
-#        test = []
-        
-#       with open('test.txt') as f:
-#            for line in f:
-#                test.append(line.replace("\n", ""))
-                
-#        if test[0] not in hospital_df['npi_number'].unique():
-#            set_up_df = {
-#                        'npi_number': test[0],
-#                        'name': 'Denil',
-#                        'url': test[1],
-#                        'Lat': 22.22,
-#                        'Lng': 22.22
-#                     }
-#            new_df = pd.DataFrame(set_up_df, index = [0])
-#            hospital_df = hospital_df.append(new_df)
-#      
-#    return hospital_df
-
-            
 def convert_address(lat, lng):
         latlng = [lat, lng]
         g = geocoder.mapbox(latlng, method='reverse', key = token)
@@ -133,44 +108,6 @@ class HospitalPricingClassifier():
 # Initialize model
 
 model = HospitalPricingClassifier()
-
-# Find NPI number from Git
-
-def findNPI(npi_number):
-    
-    desired_caps = {
-        "build": 'PyunitTest sample build',
-        "name": 'Py-unittest',
-        "platform": 'Windows 10', 
-        "browserName": 'Firefox', 
-        "version": '92.0',
-        "resolution": '1024x768', 
-        "console": 'true', 
-        "network":'true'   
-    }
-
-    driver = webdriver.Remote(
-        command_executor="https://{}:{}@hub.lambdatest.com/wd/hub".format(username, access_key),
-        desired_capabilities= desired_caps)
-
-    driver.get('https://npiregistry.cms.hhs.gov/')
-
-    npi_box = driver.find_element_by_name('number')
-    npi_box.send_keys(npi_number)
-
-    npi_button = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/form/div[7]/div/div/input[2]")
-    npi_button.click()
-    
-    auth =  driver.find_element_by_id("508focusheader").text
-    
-    if (len(str(auth)) > 8):
-        hospital_name = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[2]").text
-        hospital_address = driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/table/tbody/tr/td[4]").text
-        hospital_address = hospital_address.replace("\n", " ")
-        driver.quit()
-        return hospital_name, hospital_address
-    
-    driver.quit()
 
 
 # Mapping with Plotly
@@ -261,4 +198,4 @@ if search:
     st.text('NPI Number: ' + npi_number)
     st.text('URL: ' + str(searched_row['url'].iloc[0]))
     st.text('Address: ' + str(convert_address(lat, lng)))
-    #findNPI(npi_number)
+    
